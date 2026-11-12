@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS regions(id INTEGER PRIMARY KEY,name TEXT NOT NULL UNIQUE COLLATE NOCASE);
+CREATE TABLE IF NOT EXISTS categories(id INTEGER PRIMARY KEY,name TEXT NOT NULL UNIQUE COLLATE NOCASE);
+CREATE TABLE IF NOT EXISTS businesses(
+ id INTEGER PRIMARY KEY,code TEXT NOT NULL UNIQUE COLLATE NOCASE,name TEXT NOT NULL,owner TEXT NOT NULL,
+ category_id INTEGER NOT NULL REFERENCES categories(id),region_id INTEGER NOT NULL REFERENCES regions(id),address TEXT NOT NULL,
+ scale TEXT NOT NULL CHECK(scale IN('Mikro','Kecil','Menengah')),status TEXT NOT NULL CHECK(status IN('Aktif','Tidak Aktif')),
+ archived INTEGER NOT NULL DEFAULT 0 CHECK(archived IN(0,1))
+);
+CREATE TABLE IF NOT EXISTS programs(id INTEGER PRIMARY KEY,name TEXT NOT NULL,description TEXT NOT NULL,date TEXT NOT NULL,location TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS enrollments(
+ id INTEGER PRIMARY KEY,business_id INTEGER NOT NULL REFERENCES businesses(id),program_id INTEGER NOT NULL REFERENCES programs(id),
+ status TEXT NOT NULL DEFAULT 'Terdaftar' CHECK(status IN('Terdaftar','Hadir')),
+ created_at TEXT NOT NULL DEFAULT(strftime('%Y-%m-%dT%H:%M:%SZ','now')),UNIQUE(business_id,program_id)
+);
