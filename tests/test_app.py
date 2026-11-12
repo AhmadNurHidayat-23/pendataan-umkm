@@ -109,7 +109,7 @@ def test_roles_csrf_origin_and_logout(env):
     assert staff.post('/api/businesses', json=business()).status_code == 403
     assert staff.post('/api/businesses', json=business(), headers={'X-CSRF-Token': 'é'}).status_code == 403
     assert staff.post('/api/businesses', json=business(), headers={**h, 'Origin': 'https://lain.example'}).status_code == 403
-    token = staff.get_cookie('app_session').value
+    token = staff.get_cookie('pendataan_umkm_session').value
     db = connect(folder)
     assert db.execute('SELECT token FROM sessions WHERE token=?', (token,)).fetchone() is None
     assert db.execute('SELECT token FROM sessions WHERE token=?', (digest(token),)).fetchone() is not None
@@ -123,7 +123,7 @@ def test_persistence_reinitialization_and_database_integrity(env):
     c.post('/api/businesses', json=business(), headers=h)
     restarted = create_app({'TESTING': True, 'INSTANCE_DIR': str(folder)})
     other = restarted.test_client()
-    other.set_cookie('app_session', c.get_cookie('app_session').value)
+    other.set_cookie('pendataan_umkm_session', c.get_cookie('pendataan_umkm_session').value)
     assert other.get('/api/state').json['businesses'][0]['code'] == 'UJI-01'
     db = connect(folder)
     assert db.execute('PRAGMA integrity_check').fetchone()[0] == 'ok'

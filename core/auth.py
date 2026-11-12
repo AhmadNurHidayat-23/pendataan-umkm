@@ -40,7 +40,7 @@ def login():
     token, csrf = new_session(g.db, user_id, g.session, key)
     user = dict(g.db.execute('SELECT id,username,name,role FROM users WHERE id=?', (user_id,)).fetchone())
     response = jsonify(user=user, csrf=csrf)
-    response.set_cookie('app_session', token, max_age=28800, httponly=True, samesite='Strict', secure=os.getenv('SECURE_COOKIE') == '1')
+    response.set_cookie('pendataan_umkm_session', token, max_age=28800, httponly=True, samesite='Strict', secure=os.getenv('SECURE_COOKIE') == '1')
     return response
 
 @auth.post('/api/logout')
@@ -49,5 +49,5 @@ def logout():
     with g.db:
         g.db.execute('DELETE FROM sessions WHERE token=?', (g.session['token'],))
     response = jsonify(message='Anda telah keluar.')
-    response.delete_cookie('app_session', path='/')
+    response.delete_cookie('pendataan_umkm_session', path='/')
     return response

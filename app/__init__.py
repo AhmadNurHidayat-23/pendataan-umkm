@@ -19,7 +19,7 @@ def create_app(config=None):
     @app.before_request
     def prepare():
         g.db = connect(app.config['INSTANCE_DIR'])
-        g.session = get_session(g.db, request.cookies.get('app_session'))
+        g.session = get_session(g.db, request.cookies.get('pendataan_umkm_session'))
         g.user = {k: g.session[k] for k in ('id', 'username', 'name', 'role')} if g.session else None
         if request.method in ('POST', 'PUT', 'DELETE'):
             if request.headers.get('Origin') and request.headers['Origin'] != request.host_url.rstrip('/'):
